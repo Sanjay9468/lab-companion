@@ -17,8 +17,30 @@ const Login = () => {
   const [role, setRole] = useState<string>("");
   const [department, setDepartment] = useState<string>("");
   const [loading, setLoading] = useState(false);
+  const [forgotPassword, setForgotPassword] = useState(false);
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) {
+      toast.error("Please enter your email address");
+      return;
+    }
+    setLoading(true);
+    try {
+      const { error } = await (await import("@/integrations/supabase/client")).supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) throw error;
+      toast.success("Password reset link sent! Check your email.");
+      setForgotPassword(false);
+    } catch (err: any) {
+      toast.error(err.message || "Failed to send reset email");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -112,84 +134,126 @@ const Login = () => {
           </div>
 
           <h2 className="text-2xl font-bold text-foreground mb-2">
-            {isSignUp ? "Create an account" : "Welcome back"}
+            {forgotPassword ? "Reset password" : isSignUp ? "Create an account" : "Welcome back"}
           </h2>
           <p className="text-muted-foreground mb-8">
-            {isSignUp ? "Sign up to get started with lab records" : "Sign in to your account to continue"}
+            {forgotPassword
+              ? "Enter your email and we'll send you a reset link"
+              : isSignUp
+              ? "Sign up to get started with lab records"
+              : "Sign in to your account to continue"}
           </p>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {isSignUp && (
+          {forgotPassword ? (
+            <form onSubmit={handleForgotPassword} className="space-y-4">
               <div>
-                <Label htmlFor="fullName">Full Name</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
-                  id="fullName"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Enter your full name"
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@institution.edu"
                   required
                   className="mt-1.5"
                 />
               </div>
-            )}
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@institution.edu"
-                required
-                className="mt-1.5"
-              />
-            </div>
-            <div>
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-                className="mt-1.5"
-              />
-            </div>
-            {isSignUp && (
-              <>
+              <Button type="submit" className="w-full gradient-primary text-primary-foreground" disabled={loading}>
+                {loading ? "Sending..." : "Send Reset Link"}
+              </Button>
+              <button
+                type="button"
+                onClick={() => setForgotPassword(false)}
+                className="w-full text-sm text-primary font-medium hover:underline"
+              >
+                Back to sign in
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {isSignUp && (
                 <div>
-                  <Label>Role</Label>
-                  <Select value={role} onValueChange={setRole}>
-                    <SelectTrigger className="mt-1.5">
-                      <SelectValue placeholder="Select your role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="student">Student</SelectItem>
-                      <SelectItem value="faculty">Faculty</SelectItem>
-                      <SelectItem value="admin">Admin</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Label htmlFor="fullName">Full Name</Label>
+                  <Input
+                    id="fullName"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder="Enter your full name"
+                    required
+                    className="mt-1.5"
+                  />
                 </div>
-                <div>
-                  <Label>Department</Label>
-                  <Select value={department} onValueChange={setDepartment}>
-                    <SelectTrigger className="mt-1.5">
-                      <SelectValue placeholder="Select department" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="CSE">CSE</SelectItem>
-                      <SelectItem value="IT">IT</SelectItem>
-                      <SelectItem value="AIDS">AIDS</SelectItem>
-                    </SelectContent>
-                  </Select>
+              )}
+              <div>
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@institution.edu"
+                  required
+                  className="mt-1.5"
+                />
+              </div>
+              <div>
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  className="mt-1.5"
+                />
+              </div>
+              {!isSignUp && (
+                <div className="text-right">
+                  <button
+                    type="button"
+                    onClick={() => setForgotPassword(true)}
+                    className="text-sm text-primary font-medium hover:underline"
+                  >
+                    Forgot password?
+                  </button>
                 </div>
-              </>
-            )}
-            <Button type="submit" className="w-full gradient-primary text-primary-foreground" disabled={loading}>
-              {loading ? "Please wait..." : isSignUp ? "Create Account" : "Sign In"}
-            </Button>
-          </form>
+              )}
+              {isSignUp && (
+                <>
+                  <div>
+                    <Label>Role</Label>
+                    <Select value={role} onValueChange={setRole}>
+                      <SelectTrigger className="mt-1.5">
+                        <SelectValue placeholder="Select your role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="student">Student</SelectItem>
+                        <SelectItem value="faculty">Faculty</SelectItem>
+                        <SelectItem value="admin">Admin</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Department</Label>
+                    <Select value={department} onValueChange={setDepartment}>
+                      <SelectTrigger className="mt-1.5">
+                        <SelectValue placeholder="Select department" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="CSE">CSE</SelectItem>
+                        <SelectItem value="IT">IT</SelectItem>
+                        <SelectItem value="AIDS">AIDS</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </>
+              )}
+              <Button type="submit" className="w-full gradient-primary text-primary-foreground" disabled={loading}>
+                {loading ? "Please wait..." : isSignUp ? "Create Account" : "Sign In"}
+              </Button>
+            </form>
+          )}
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
             {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
