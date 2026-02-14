@@ -8,6 +8,7 @@ interface AuthContextType {
   user: User | null;
   role: UserRole | null;
   department: string | null;
+  year: number | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, fullName: string, role: UserRole, department: string) => Promise<void>;
@@ -26,6 +27,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<UserRole | null>(null);
   const [department, setDepartment] = useState<string | null>(null);
+  const [year, setYear] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchProfile = async (userId: string) => {
@@ -48,6 +50,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       } else {
         setRole(null);
         setDepartment(null);
+        setYear(null);
       }
       setLoading(false);
     });
@@ -85,10 +88,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(null);
     setRole(null);
     setDepartment(null);
+    setYear(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, role, department, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, role, department, year, loading, signIn, signUp, signOut }}>
       {children}
     </AuthContext.Provider>
   );
