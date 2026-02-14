@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import CodeEditor from "./pages/CodeEditor";
+import SubjectEnrollment from "./pages/SubjectEnrollment";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,14 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route
+              path="/enroll"
+              element={
+                <ProtectedRoute>
+                  <SubjectEnrollment />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/dashboard/editor"
               element={
