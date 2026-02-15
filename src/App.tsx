@@ -12,6 +12,7 @@ import Dashboard from "./pages/Dashboard";
 import CodeEditor from "./pages/CodeEditor";
 import SubjectEnrollment from "./pages/SubjectEnrollment";
 import MySubjects from "./pages/MySubjects";
+import FacultyEvaluate from "./pages/FacultyEvaluate";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -48,6 +49,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <CodeEditor />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/evaluate"
+              element={
+                <ProtectedRoute>
+                  <FacultyEvaluate />
                 </ProtectedRoute>
               }
             />
