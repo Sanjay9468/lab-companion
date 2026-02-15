@@ -11,6 +11,7 @@ import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import CodeEditor from "./pages/CodeEditor";
 import SubjectEnrollment from "./pages/SubjectEnrollment";
+import MySubjects from "./pages/MySubjects";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <SubjectEnrollment />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/subjects"
+              element={
+                <ProtectedRoute>
+                  <MySubjects />
                 </ProtectedRoute>
               }
             />
