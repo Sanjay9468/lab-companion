@@ -4,12 +4,13 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FlaskConical, LayoutDashboard, Users, BookOpen, FileText,
-  LogOut, Code, GraduationCap, ChevronRight, Upload, Menu, X
+  LogOut, Code, GraduationCap, ChevronRight, Upload, Menu, X, Settings
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const adminLinks = [
   { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+  { to: "/dashboard/admin", icon: Settings, label: "Admin Panel" },
   { to: "/dashboard/users", icon: Users, label: "User Management" },
   { to: "/dashboard/subjects", icon: BookOpen, label: "Subjects" },
   { to: "/dashboard/experiments", icon: FlaskConical, label: "Experiments" },

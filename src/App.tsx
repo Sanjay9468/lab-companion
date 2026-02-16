@@ -13,6 +13,7 @@ import CodeEditor from "./pages/CodeEditor";
 import SubjectEnrollment from "./pages/SubjectEnrollment";
 import MySubjects from "./pages/MySubjects";
 import FacultyEvaluate from "./pages/FacultyEvaluate";
+import AdminPanel from "./pages/AdminPanel";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -57,6 +58,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <FacultyEvaluate />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/admin"
+              element={
+                <ProtectedRoute>
+                  <AdminPanel />
                 </ProtectedRoute>
               }
             />
